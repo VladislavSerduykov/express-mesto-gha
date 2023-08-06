@@ -14,7 +14,7 @@ async function createCard(req, res, next) {
   try {
     const { name, link } = req.body;
     const ownerId = req.user._id;
-    const card = await cardSchema.create({ name, link, _id: ownerId });
+    const card = await cardSchema.create({ name, link, owner: ownerId });
     res.status(201).send(card);
   } catch (err) {
     if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -35,7 +35,7 @@ async function deleteCard(req, res, next) {
       throw new NotFoundError('Карточка не найдена');
     }
 
-    const ownerId = card.owner._id;
+    const ownerId = card.owner._id.toString();
     const userId = req.user._id;
 
     if (ownerId !== userId) {
